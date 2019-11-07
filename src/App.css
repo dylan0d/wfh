@@ -1,0 +1,15 @@
+.App {
+  text-align: center;
+}
+
+.header {
+  margin-top: 3rem;
+}
+
+.bordered {
+  border-radius: 1.5rem;
+  border: 0.175rem solid purple;
+  margin: 1rem;
+  padding-right: 5%;
+  padding-left: 5%;
+}
