@@ -89,7 +89,7 @@ export default class App extends React.Component {
           <>
           <div className='bordered'>
             <h3>
-              On {format(calculatedDate, "EEEE 'the' do 'of' MMMM yyyy")}: 
+              On {format(chosenDate, "EEEE 'the' do 'of' MMMM yyyy")}: 
             </h3>
             {this.state.allOff.map(el => <h1 key={el}>{el}</h1>)}
             <h3>
