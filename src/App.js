@@ -11,7 +11,7 @@ import { ThemeProvider } from '@material-ui/styles';
 const offset = 3;
 const day1 = new Date(2019, 10, 4);
 let deskNumber = 0;
-let chosenDate = day1;
+let chosenDate = new Date();
 let calculatedDate = day1
 let dayOffThatWeek = '';
 let selectedName = '';
