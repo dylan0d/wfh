@@ -23,7 +23,7 @@ svg.append("text")
 
 var color = d3.scaleSequential(d3.interpolateSpectral);
 
-var worker = new Worker("worker.js");
+var worker = new Worker("legoworker.js");
 
 d3.json("links2016.json", function(error, graph) {
     if (error) throw error;
