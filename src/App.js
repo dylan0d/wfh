@@ -5,11 +5,12 @@ import AppBar from '@material-ui/core/AppBar';
 import { appBarTheme } from "./style/theme";
 import './App.css';
 import deskAllocations from './assets/deskAllocation.json';
-import { differenceInCalendarWeeks, format, getDay, addDays }  from 'date-fns';
+import { differenceInCalendarWeeks, format, getDay, addDays, subDays, addWeeks }  from 'date-fns';
 import { ThemeProvider } from '@material-ui/styles';
 
 const offset = 3;
 const day1 = new Date(2019, 10, 4);
+const forecastAmount = 5;
 let deskNumber = 0;
 let chosenDate = new Date();
 let calculatedDate = day1
@@ -19,7 +20,7 @@ let selectedName = '';
 export default class App extends React.Component {
   constructor() {
     super();
-    this.state = { dayOffThatWeek: '', chosenDate: new Date(), allOff: [] };
+    this.state = { dayOffThatWeek: '', chosenDate: new Date(), allOff: [], nextDays: [] };
   }
 
   calculateDayOff() {
@@ -27,8 +28,24 @@ export default class App extends React.Component {
     dayOffThatWeek = ((deskNumber - 1 + (gap * offset)) % 5);
     const difference = dayOffThatWeek - (getDay(chosenDate) - 1);
     calculatedDate = addDays(chosenDate, difference);
+    this.getNext(dayOffThatWeek, calculatedDate);
     this.setState({dayOffThatWeek: format(calculatedDate, "EEEE 'the' do 'of' MMMM yyyy")})
   };
+
+  componentDidMount() { 
+    console.log('mounted');
+    this.findAll()
+  }
+
+  getNext(currentDay, startingWeek) {
+    let i;
+    const nextDays = []
+    for(i=1; i<=forecastAmount; i++) {
+      const thisMonday = subDays(startingWeek, (currentDay - 1));
+      nextDays.push(format(addDays(addWeeks(thisMonday, i), ((i*offset)-1) % 5), "EEEE 'the' do 'of' MMMM"))
+    }
+    this.setState({nextDays});
+  }
 
   handleNameSelect(selectedEntity) {
     const fullPerson = deskAllocations.find((x) => x.desk === parseInt(selectedEntity))
@@ -46,7 +63,6 @@ export default class App extends React.Component {
         peopleOff.push(person.name);
       }
     })
-    console.log(peopleOff)
     this.setState({
       allOff: peopleOff
     })
@@ -54,7 +70,6 @@ export default class App extends React.Component {
 
   handleDateChosen(date) {
     chosenDate = date
-    console.log(chosenDate);
     this.calculateDayOff();
     this.findAll();
   }
@@ -81,6 +96,10 @@ export default class App extends React.Component {
             <h1>
               { this.state.dayOffThatWeek }
             </h1> 
+          </div>
+          <div className='bordered'>
+            <h3>Their next 5 WHF days are:</h3>
+            {this.state.nextDays.map(el => <h2 key={el}>{el}</h2>)}
           </div>
           </> : null
         }
