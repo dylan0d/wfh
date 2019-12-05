@@ -42,7 +42,6 @@ export default class App extends React.Component {
     const nextDays = []
     for(i=1; i<=forecastAmount; i++) {
       const thisMonday = subDays(startingWeek, (currentDay));
-      console.log(thisMonday);
       nextDays.push(format(addDays(addWeeks(thisMonday, i), (currentDay + (i*offset)) % 5), "EEEE 'the' do 'of' MMMM"))
     }
     this.setState({nextDays});
