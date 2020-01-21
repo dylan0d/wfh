@@ -98,7 +98,7 @@ export default class App extends React.Component {
             </h1> 
           </div>
           <div className='bordered'>
-            <h3>Their next 5 WHF days are:</h3>
+            <h3>Their next 5 WFH days are:</h3>
             {this.state.nextDays.map(el => <h2 key={el}>{el}</h2>)}
           </div>
           </> : null
