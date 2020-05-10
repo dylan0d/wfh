@@ -1,7 +1,31 @@
 steps:
 - name: "gcr.io/cloud-builders/yarn"
+  waitFor: ['-']
+  id: 'yarnInstall'
 - name: "gcr.io/cloud-builders/yarn"
+  waitFor: ['yarnInstall']
   args: ["build"]
+  id: 'yarnBuild'
 - name: "gcr.io/cloud-builders/gcloud"
-  args: ["app", "deploy"]
+  args: ["app", "deploy", ./packages/app/app.yaml]
+  waitFor: ['yarnBuild']
+- name: 'gcr.io/cloud-builders/gcloud'
+  id: 'deploySwapEndpoints'
+  waitFor: ['yarnInstall']
+  args:
+    [
+        'endpoints',
+        'services',
+        'deploy',
+        './packages/swap-service/openapi.yaml',
+    ]
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+      [
+          'app',
+          'deploy',
+          '--version=beta',
+          './packages/swap-service/app.yaml',
+      ]
+  waitFor: ['deploySwapEndpoints']
 timeout: "1600s"

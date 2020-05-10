@@ -5,11 +5,7 @@ const Firestore = require('@google-cloud/firestore');
 const app = new Koa();
 const router = koaRouter();
 const port = 5001
-const firestore = new Firestore(
-{
-    projectId: 'cse-wfh',
-    keyFilename: './key.json'
-});
+const firestore = new Firestore();
 
 async function getCollection(name) {
     const requestsCollection = firestore.collection(name);
@@ -33,9 +29,9 @@ router.get('/status', async (ctx) => {
     const requestsCollection = await getCollection('swaps');
     const snapshot = getDocs(requestsCollection);
     ctx.body = snapshot;
-    console.log(ctx.body);
+    console.log(ctx.request.query);
 });
 
 app.use(router.routes());
-app.listen(port);
+app.listen(process.env.PORT || 5001);
 console.log('listening on port ', port)
