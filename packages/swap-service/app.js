@@ -7,30 +7,48 @@ const router = koaRouter();
 const port = 5001
 const firestore = new Firestore();
 
-async function getCollection(name) {
-    const requestsCollection = firestore.collection(name);
-    const snapshot = await requestsCollection.get();
-    return snapshot;
-}
+async function getDocs(collection) {
+    const snapshot = await collection.get();
 
-function getDocs(collection) {
     const docs = [];
     let index = 0;
-    collection.forEach((s) => {
+    snapshot.forEach((s) => {
         const doc = s.data();
-        doc.id = collection.docs[index].id;
+        doc.id = snapshot.docs[index].id;
         docs.push(doc);
         index++;
     });
     return docs;
 } 
 
-router.get('/status', async (ctx) => {
-    const requestsCollection = await getCollection('swaps');
-    const snapshot = getDocs(requestsCollection);
-    ctx.body = snapshot;
-    console.log(ctx.request.query);
+router.get('/allSwaps', async (ctx) => {
+    console.log('requesting all swaps')
+    const requestsCollection = firestore.collection('swaps');
+    const docs = await getDocs(requestsCollection);
+    ctx.body = docs;
+    console.log('all swaps retrieved')
 });
+
+router.get('/swapsOnDate', async (ctx) => {
+    const date = ctx.query.date;
+    console.log(`Swaps requested for ${date}`);
+    const swapsCollection = firestore.collection('swaps');
+
+    const query = await swapsCollection.where('date', '==', date);
+
+    const docs = await getDocs(query);
+
+    console.log(docs);
+
+    ctx.body = docs;
+
+    console.log(`Returned swaps for date ${date}`);
+})
+
+router.get('/status', (ctx) => {
+    ctx.body = 'all good';
+    console.log('Replied all good on status');
+})
 
 app.use(router.routes());
 app.listen(process.env.PORT || 5001);
