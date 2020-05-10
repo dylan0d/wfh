@@ -1,5 +1,6 @@
 const Koa = require('koa');
 const koaRouter = require('koa-router');
+const cors = require('@koa/cors');
 const Firestore = require('@google-cloud/firestore');
 
 const app = new Koa();
@@ -50,6 +51,7 @@ router.get('/status', (ctx) => {
     console.log('Replied all good on status');
 })
 
+app.use(cors());
 app.use(router.routes());
 app.listen(process.env.PORT || 5001);
 console.log('listening on port ', port)

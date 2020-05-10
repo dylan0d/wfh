@@ -7,10 +7,12 @@ import './App.css';
 import deskAllocations from './assets/deskAllocation.json';
 import { differenceInCalendarWeeks, format, getDay, addDays, subDays, addWeeks }  from 'date-fns';
 import { ThemeProvider } from '@material-ui/styles';
+import axios from 'axios';
 
 const offset = 3;
 const day1 = new Date(2019, 10, 4);
 const forecastAmount = 5;
+let noSwapsError = '';
 let deskNumber = 0;
 let chosenDate = new Date();
 let calculatedDate = day1
@@ -20,7 +22,14 @@ let selectedName = '';
 export default class App extends React.Component {
   constructor() {
     super();
-    this.state = { dayOffThatWeek: '', chosenDate: new Date(), allOff: [], nextDays: [] };
+    this.state = { dayOffThatWeek: '', chosenDate: new Date(), allOff: [], nextDays: [], swaps: [] };
+    this.getSwaps(chosenDate);
+  }
+
+  async getSwaps(date) {
+    const formattedDate = format(date, "yyyy-MM-dd")
+    const swaps = (await axios.get(`http://localhost:5001/swapsOnDate?date=${formattedDate}`)).data;
+    this.setState({swaps: swaps})
   }
 
   calculateDayOff() {
@@ -60,7 +69,7 @@ export default class App extends React.Component {
       const gap = Math.abs(differenceInCalendarWeeks(day1, chosenDate));
       const theirDayOff = ((person.desk - 1 + (gap * offset)) % 5);
       if (theirDayOff === getDay(chosenDate) - 1) {
-        peopleOff.push(person.name);
+        peopleOff.push(person);
       }
     })
     this.setState({
@@ -68,8 +77,13 @@ export default class App extends React.Component {
     })
   }
 
-  handleDateChosen(date) {
+  async handleDateChosen(date) {
     chosenDate = date
+    try {
+      await this.getSwaps(chosenDate)
+    } catch {
+      noSwapsError = 'Swaps could not be retrieved :('
+    }
     this.calculateDayOff();
     this.findAll();
   }
@@ -107,10 +121,27 @@ export default class App extends React.Component {
           this.state.allOff.length > 0 ?
           <>
           <div className='bordered'>
+            {noSwapsError ? <p> {noSwapsError} </p> : null}
             <h3>
               On {format(chosenDate, "EEEE 'the' do 'of' MMMM yyyy")}: 
             </h3>
-            {this.state.allOff.map(el => <h1 key={el}>{el}</h1>)}
+            {
+              this.state.allOff.map(
+                (el) => {
+                  let name = el.name
+                  let oldName = '';
+                  let hasSwapped = false;
+                  this.state.swaps.forEach((swap) => {
+                    if(el.desk === swap.oldPerson) {
+                      hasSwapped = true;
+                      name = deskAllocations.find((x) => x.desk === swap.newPerson).name;
+                      oldName = el.name
+                    }
+                  })
+                  return !hasSwapped ? <h1 key={name}>{name}</h1> : <div key={name}> <h1 >{name}</h1> <p> Swapped with {oldName} </p> </div>
+                }
+              )
+            }
             <h3>
               may be working from home
             </h3>
