@@ -6,7 +6,7 @@ steps:
 - name: node:12
   entrypoint: yarn
   waitFor: ['yarnInstall']
-  args: ["build"]
+  args: ["build:ui"]
   id: 'yarnBuild'
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["app", "deploy", ./packages/app/app.yaml]
