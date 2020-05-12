@@ -25,3 +25,25 @@ paths:
                     description: 'Current state of database'
                     schema:
                         type: string
+    '/allSwaps':
+        get:
+            description: 'Get all swaps'
+            operationId: 'all_swaps_get'
+            produces:
+                - 'application/json'
+            responses:
+                200:
+                    description: 'all swaps'
+                    schema:
+                        type: object
+    '/swapsOnDate':
+        get:
+            description: 'Get all swaps for specific date'
+            operationId: 'date_swaps_get'
+            produces:
+                - 'application/json'
+            responses:
+                200:
+                    description: 'all swaps on specific date'
+                    schema:
+                        type: object
