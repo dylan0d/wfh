@@ -1,5 +1,7 @@
 const Firestore = require('@google-cloud/firestore');
 const firestore = new Firestore();
+const swapsCollection = firestore.collection('swaps');
+
 async function getDocs(collection) {
     const snapshot = await collection.get();
 
@@ -16,14 +18,20 @@ async function getDocs(collection) {
 
 module.exports = {
      getAllSwaps: async function() {
-        const requestsCollection = firestore.collection('swaps');
-        const docs = await getDocs(requestsCollection);
+        const docs = await getDocs(swapsCollection);
         return docs
      },
      getSwapsOnDate: async function(date) {
-        const swapsCollection = firestore.collection('swaps');
         const query = await swapsCollection.where('date', '==', date);
         const docs = await getDocs(query);
         return docs
+     },
+     createSwap: async function({date, oldPerson, newPerson}) {
+        await swapsCollection.add({
+            date,
+            newPerson: newPerson,
+            oldPerson: oldPerson
+        })
+        return `Swapped desk ${oldPerson} for ${newPerson} on ${date}`
      }
 }
