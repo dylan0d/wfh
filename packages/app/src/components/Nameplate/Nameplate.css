@@ -17,6 +17,7 @@
 }
 
 .MuiIconButton-colorSecondary {
+    margin-left: 0.5rem !important;
     flex: 0 0 auto !important;    
     color: purple !important;
 }
