@@ -30,4 +30,24 @@ steps:
           './packages/swap-service/app.yaml',
       ]
   waitFor: ['deploySwapEndpoints']
+- name: 'gcr.io/cloud-builders/gcloud'
+  id: 'deployBotEndpoints'
+  waitFor: ['yarnInstall']
+  args:
+    [
+        'endpoints',
+        'services',
+        'deploy',
+        './packages/bot/openapi.yaml',
+    ]
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+      [
+          'app',
+          'deploy',
+          '--version=beta',
+          './packages/bot/app.yaml',
+      ]
+  waitFor: ['deployBotEndpoints']
+
 timeout: "1600s"

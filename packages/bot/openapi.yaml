@@ -1,0 +1,27 @@
+swagger: '2.0'
+info:
+    description: 'Swap API'
+    title: 'Bot Service'
+    version: '1.0.0'
+host: 'bot-service-dot-cse-wfh.appspot.com'
+x-google-endpoints:
+    - name: 'bot-service-dot-cse-wfh.appspot.com'
+      allowCors: True
+consumes:
+    - 'application/json'
+produces:
+    - 'application/json'
+schemes:
+    - 'https'
+paths:
+    '/':
+        post:
+            description: 'Send message to bot'
+            operationId: 'send_message_to_bot'
+            produces:
+                - 'application/json'
+            responses:
+                200:
+                    description: 'Response From Bot'
+                    schema:
+                        type: string
