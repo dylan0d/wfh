@@ -1,0 +1,49 @@
+swagger: '2.0'
+info:
+    description: 'Swap API'
+    title: 'Swap Service'
+    version: '1.0.0'
+host: 'swap-service-dot-cse-wfh.appspot.com'
+x-google-endpoints:
+    - name: 'swap-service-dot-cse-wfh.appspot.com'
+      allowCors: True
+consumes:
+    - 'application/json'
+produces:
+    - 'application/json'
+schemes:
+    - 'https'
+paths:
+    '/status':
+        get:
+            description: 'Get current status service'
+            operationId: 'swap_status_get'
+            produces:
+                - 'application/json'
+            responses:
+                200:
+                    description: 'Current state of database'
+                    schema:
+                        type: string
+    '/allSwaps':
+        get:
+            description: 'Get all swaps'
+            operationId: 'all_swaps_get'
+            produces:
+                - 'application/json'
+            responses:
+                200:
+                    description: 'all swaps'
+                    schema:
+                        type: object
+    '/swapsOnDate':
+        get:
+            description: 'Get all swaps for specific date'
+            operationId: 'date_swaps_get'
+            produces:
+                - 'application/json'
+            responses:
+                200:
+                    description: 'all swaps on specific date'
+                    schema:
+                        type: object

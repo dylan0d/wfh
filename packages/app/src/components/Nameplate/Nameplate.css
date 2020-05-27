@@ -1,0 +1,23 @@
+.nameAndButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spacer {
+    visibility: hidden;
+    flex: 0 0 auto;
+}
+
+.name {
+    flex: 0 0 auto;
+    font-size: 2em;
+    font-weight: bold;
+
+}
+
+.MuiIconButton-colorSecondary {
+    margin-left: 0.5rem !important;
+    flex: 0 0 auto !important;    
+    color: purple !important;
+}
